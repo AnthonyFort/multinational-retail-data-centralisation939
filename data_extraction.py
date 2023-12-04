@@ -8,8 +8,8 @@ class DataExtractor():
 
   def retrieve_pdf_data(self, link):
     dfs = tabula.read_pdf(link, pages='all') # Returns list of dataframes
-    df = reduce(lambda left, right: pd.concat((left, right), axis=0, join='outer'), dfs) # Joins dataframes into single dataframe
-    print(df)
+    df = reduce(lambda left, right: pd.concat((left, right), axis=0, join='outer', ignore_index=True), dfs) # Joins dataframes into single dataframe
+    print(df.tail(20))
 
 new_df = DataExtractor()
 new_df.retrieve_pdf_data(link)
