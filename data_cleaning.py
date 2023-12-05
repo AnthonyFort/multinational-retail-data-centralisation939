@@ -38,7 +38,7 @@ class DataCleaning:
     self.upload_to_db(df)
 
   def upload_to_db(self, df):
-    df.to_sql('sales_data', engine, if_exists='replace')  
+    df.to_sql('dim_card_details', engine, if_exists='replace')  
 
 df_to_clean = DataCleaning()
 
