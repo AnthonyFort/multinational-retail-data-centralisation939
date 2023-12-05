@@ -16,7 +16,6 @@ PASSWORD = os.environ.get('PASSWORD')
 DATABASE = os.environ.get('DATABASE')
 PORT = 5432
 
-print(f'{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}')
 
 engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
 engine.execution_options(isolation_level='AUTOCOMMIT').connect()
