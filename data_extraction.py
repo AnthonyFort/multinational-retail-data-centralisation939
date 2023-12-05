@@ -1,11 +1,15 @@
 import tabula
 import pandas as pd
+from pandas import json_normalize
 from functools import reduce
 import requests
 from dotenv import find_dotenv, load_dotenv
 import os
+import json
 
 load_dotenv(find_dotenv())
+
+store_endpoint =  'https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/'
 
 store_numbers_url = ' https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores'
 api_key = os.environ.get('x-api-key')
@@ -26,7 +30,16 @@ class DataExtractor():
     response = requests.get(endpoint, headers=header_dict)
     data = response.json()
     number_of_stores = data['number_stores']
-    return number_of_stores
+    self.retreive_stores_data(number_of_stores, store_endpoint=store_endpoint)
+  
+  def retreive_stores_data(self, number_of_stores, store_endpoint):
+    json_responses = []
+    for n in range( number_of_stores):
+      response = requests.get(f'{store_endpoint}{n}', headers=headers)
+      data = json.loads(response.text)
+      json_responses.append(data)
+    df = pd.DataFrame(json_responses)
+    print(df)  
 
 new_df = DataExtractor()
 
