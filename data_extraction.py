@@ -6,6 +6,7 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 import os
 import json
+import boto3
 
 load_dotenv(find_dotenv())
 
@@ -18,6 +19,10 @@ headers = {
   'Content-Type': 'application/json',
   'x-api-key': api_key
 }
+
+filename_for_downloaded_csv = os.environ.get('filename_for_downloaded_csv')
+
+s3 = boto3.client('s3')
 
 class DataExtractor():
 
@@ -43,8 +48,13 @@ class DataExtractor():
       json.dump(json_responses, f)  
     df = pd.DataFrame(json_responses)
 
+  def extract_from_s3(self, bucket, key):
+    s3.download_file(bucket, key, filename_for_downloaded_csv)
+
 
 new_df = DataExtractor()
 
 # new_df.list_number_of_stores(store_numbers_url, headers)
+
+new_df.extract_from_s3('data-handling-public', 'products.csv')
 
