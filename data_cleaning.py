@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 import psycopg2
 from dotenv import find_dotenv, load_dotenv
 import os
+from dateutil.parser import parse
 import data_extraction
 
 load_dotenv(find_dotenv())
@@ -50,9 +51,13 @@ class DataCleaning:
     df['staff_numbers'] = pd.to_numeric(df['staff_numbers'], errors='coerce')
     df = df.dropna(subset=['staff_numbers'])
     df['staff_numbers'] = df['staff_numbers'].astype('int32')
-
+    df['opening_date'] = df['opening_date'].apply(parse)
+    df['opening_date'] = pd.to_datetime(df['opening_date'], infer_datetime_format=True, errors='coerce')
+    df['store_type'] = df['store_type'].str.strip().str.upper()
+    df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
+    df['continent'] = df['continent'].replace('ee', '', regex=True).str.strip().str.upper()
+    df = df.drop('message', axis=1)
     pd.set_option('display.max_rows', None)
-    print(df['opening_date'])
     df.info()
 
 df_to_clean = DataCleaning()
