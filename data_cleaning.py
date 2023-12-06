@@ -39,6 +39,24 @@ class DataCleaning:
   def upload_to_db(self, df):
     df.to_sql('dim_card_details', engine, if_exists='replace')  
 
+  def clean_store_data(self, filename):
+    df = pd.read_json(filename)
+    df['address'] = df['address'].replace('\n', ' ', regex=True).str.strip().str.upper()
+    df['longitude'] = pd.to_numeric(df['longitude'], errors='coerce')
+    df = df.drop('lat', axis=1)
+    df['locality'] = df['locality'].str.strip().str.upper()
+    df['store_code'] = df['store_code'].str.strip()
+    df = df[df['store_code'].str[2].eq('-')]
+    df['staff_numbers'] = pd.to_numeric(df['staff_numbers'], errors='coerce')
+    df = df.dropna(subset=['staff_numbers'])
+    df['staff_numbers'] = df['staff_numbers'].astype('int32')
+
+    pd.set_option('display.max_rows', None)
+    print(df['opening_date'])
+    df.info()
+
 df_to_clean = DataCleaning()
 
-df_to_clean.clean_card_data(df_from_extraction)
+# df_to_clean.clean_card_data(df_from_extraction)
+
+df_to_clean.clean_store_data('stores_data.json')

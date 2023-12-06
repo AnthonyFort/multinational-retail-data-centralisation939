@@ -38,9 +38,13 @@ class DataExtractor():
       response = requests.get(f'{store_endpoint}{n}', headers=headers)
       data = json.loads(response.text)
       json_responses.append(data)
+
+    with open('stores_data.json', 'w') as f:
+      json.dump(json_responses, f)  
     df = pd.DataFrame(json_responses)
-    print(df)  
+
 
 new_df = DataExtractor()
 
-new_df.list_number_of_stores(store_numbers_url, headers)
+# new_df.list_number_of_stores(store_numbers_url, headers)
+
