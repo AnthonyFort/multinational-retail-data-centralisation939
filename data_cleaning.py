@@ -39,6 +39,7 @@ class DataCleaning:
 
   def upload_to_db(self, df):
     df.to_sql('dim_card_details', engine, if_exists='replace')  
+    
 
   def clean_store_data(self, filename):
     df = pd.read_json(filename)
@@ -57,8 +58,7 @@ class DataCleaning:
     df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
     df['continent'] = df['continent'].replace('ee', '', regex=True).str.strip().str.upper()
     df = df.drop('message', axis=1)
-    pd.set_option('display.max_rows', None)
-    df.info()
+    df.to_sql('dim_store_details', engine, if_exists='replace')
 
 df_to_clean = DataCleaning()
 
