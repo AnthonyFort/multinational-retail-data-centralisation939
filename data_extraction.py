@@ -50,11 +50,16 @@ class DataExtractor():
 
   def extract_from_s3(self, bucket, key):
     s3.download_file(bucket, key, filename_for_downloaded_csv)
+    
+  def convert_csv_to_df(self):
+    df = pd.read_csv('products.csv')
+    return df
 
 
 new_df = DataExtractor()
 
 # new_df.list_number_of_stores(store_numbers_url, headers)
 
-new_df.extract_from_s3('data-handling-public', 'products.csv')
+# new_df.extract_from_s3('data-handling-public', 'products.csv')
 
+new_df.convert_csv_to_df()

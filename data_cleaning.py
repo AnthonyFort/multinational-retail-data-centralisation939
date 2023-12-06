@@ -25,6 +25,11 @@ link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf
 
 df_from_extraction = data_extraction.new_df.retrieve_pdf_data(link)
 
+products_df = data_extraction.new_df.convert_csv_to_df()
+
+
+
+
 class DataCleaning:
 
   def clean_card_data(self, df):
@@ -60,8 +65,31 @@ class DataCleaning:
     df = df.drop('message', axis=1)
     df.to_sql('dim_store_details', engine, if_exists='replace')
 
+  def convert_product_weights(self, df):
+    # weight_units = df['weight'].str[-2:]
+    # print(weight_units.unique())
+
+    df['temp_weight'] = df['weight']
+    # df['temp_weight'] = df['temp_weight'].str.replace('\p{L}', '', regex=True).astype(float)
+    df['temp_weight'] = df['temp_weight'].str.replace('[A-Za-z]', '', regex=True)
+    df['temp_weight'] = pd.to_numeric(df['temp_weight'], errors='coerce')
+
+    df.loc[(df['weight'].str[-1] == 'g') & (df['weight'].str[-2] != 'k'), 'temp_weight'] = df['temp_weight'] / 1000
+    df.loc[df['weight'].str[-2:] == 'ml', 'temp_weight'] = df['temp_weight'] / 1000
+    df.loc[df['weight'].str[-2:] == 'oz', 'temp_weight'] = df['temp_weight'] * 0.0283495
+
+    pd.set_option('display.max_rows', None)
+    print(df[['temp_weight', 'weight']].head(30))
+    # print(df['weight'].head(30))
+
+    df.info()
+
+
+
+
 df_to_clean = DataCleaning()
 
 # df_to_clean.clean_card_data(df_from_extraction)
 
-df_to_clean.clean_store_data('stores_data.json')
+# df_to_clean.clean_store_data('stores_data.json')
+df_to_clean.convert_product_weights(products_df)
