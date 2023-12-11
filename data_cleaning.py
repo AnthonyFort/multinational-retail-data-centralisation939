@@ -5,7 +5,7 @@ from dateutil.parser._parser import ParserError
 from dataprep.clean import clean_email
 from data_extraction import users_df
 from data_utils import new_db_connector
-
+from dotenv import find_dotenv, load_dotenv
 
 class DataCleaning():
   
