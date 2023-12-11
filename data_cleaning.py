@@ -3,7 +3,7 @@ import numpy as np
 from dateutil.parser import parse
 from dateutil.parser._parser import ParserError
 from dataprep.clean import clean_email
-from data_extraction import users_df
+from data_extraction import users_df, orders_df
 from data_utils import new_db_connector
 from dotenv import find_dotenv, load_dotenv
 
@@ -44,10 +44,35 @@ class DataCleaning():
     df.drop_duplicates(inplace=True)
     df = df.dropna()
     return new_db_connector.upload_to_db(df, 'dim_users')
+      
+  def clean_orders_data(self, df):
+    df.drop('first_name', axis=1, inplace=True)
+    df.drop('last_name', axis=1, inplace=True)
+    df.drop('1', axis=1, inplace=True)
+    df.drop('level_0', axis=1, inplace=True)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[8].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[13].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[18].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[23].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[8].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[13].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[18].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[23].eq('-'), other=np.nan)
+    df['card_number'] = df['card_number'].astype(str)
+    df['store_code'] = df['store_code'].str.strip()
+    code_check_condition = np.where(df['store_code'].str.startswith('WEB'), 
+                     df['store_code'].str[3].eq('-'), 
+                     df['store_code'].str[2].eq('-'))
+    df = df[code_check_condition]
+    df['product_code'] = df['product_code'].mask(~df['product_code'].str[2].eq('-'), other=np.nan)
+    df.drop_duplicates(inplace=True)
+    df = df.dropna()
+    return new_db_connector.upload_to_db(df, 'orders_table')
 
 new_data_cleaner = DataCleaning()
 
-new_data_cleaner.clean_user_data(users_df)
+# new_data_cleaner.clean_user_data(users_df)
+new_data_cleaner.clean_orders_data(orders_df)
 
 # import pandas as pd
 # from sqlalchemy import create_engine

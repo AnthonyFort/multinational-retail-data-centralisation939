@@ -10,6 +10,7 @@ class DataExtractor():
 new_data_extractor = DataExtractor()
 
 users_df = new_data_extractor.read_rds_table(data_utils.new_db_connector, 'legacy_users')
+orders_df = new_data_extractor.read_rds_table(data_utils.new_db_connector, 'orders_table')
 
 print(users_df)
 
