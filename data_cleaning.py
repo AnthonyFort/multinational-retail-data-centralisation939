@@ -4,6 +4,8 @@ from dateutil.parser import parse
 from dateutil.parser._parser import ParserError
 from dataprep.clean import clean_email
 from data_extraction import users_df
+from data_utils import new_db_connector
+
 
 class DataCleaning():
   
@@ -41,8 +43,7 @@ class DataCleaning():
     df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[23].eq('-'), other=np.nan)
     df.drop_duplicates(inplace=True)
     df = df.dropna()
-    print(df.isna().sum())
-    df.info()
+    return new_db_connector.upload_to_db(df, 'dim_users')
 
 new_data_cleaner = DataCleaning()
 
