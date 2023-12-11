@@ -1,5 +1,13 @@
+from data_extraction import users_df
+
 class DataCleaning():
-  pass
+  
+  def clean_user_data(self, df):
+    df.info()
+
+new_data_cleaner = DataCleaning()
+
+new_data_cleaner.clean_user_data(users_df)
 
 # import pandas as pd
 # from sqlalchemy import create_engine

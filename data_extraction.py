@@ -1,8 +1,21 @@
+import pandas as pd
+import data_utils
 
 class DataExtractor():
-  pass
   
+  def read_rds_table(self, connector, table_name):
+    engine = connector.read_db_creds('db_creds.yaml')
+    return pd.read_sql_table(table_name, engine)
+  
+new_data_extractor = DataExtractor()
 
+users_df = new_data_extractor.read_rds_table(data_utils.new_db_connector, 'legacy_users')
+
+print(users_df)
+
+# new_data_extractor.read_rds_data(data_utils.new_db_connector.read_db_creds('db_creds.yaml', 'legacy_store_details'))
+
+# new_data_extractor.read_rds_data(data_utils.new_db_connector.read_db_creds('db_creds.yaml', 'orders_table'))
 
 
 # import tabula
