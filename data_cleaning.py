@@ -1,8 +1,47 @@
+import pandas as pd
+import numpy as np
+from dateutil.parser import parse
+from dateutil.parser._parser import ParserError
+from dataprep.clean import clean_email
 from data_extraction import users_df
 
 class DataCleaning():
   
+  def parse_date(self, date_column):
+    if pd.isna(date_column):
+      return None
+    try:
+      return parse(date_column)
+    except (ParserError, TypeError):
+      return None
+
   def clean_user_data(self, df):
+    df['first_name'] = df['first_name'].str.title().str.strip().str.replace('[^a-zA-Z]', '', regex=True)
+    df['last_name'] = df['last_name'].str.title().str.strip().str.replace('[^a-zA-Z]', '', regex=True)
+    df['date_of_birth'] = df['date_of_birth'].apply(self.parse_date)
+    df['date_of_birth'] = pd.to_datetime(df['date_of_birth'], infer_datetime_format=True, errors='coerce')
+    df['company'] = df['company'].str.strip()
+    clean_email(df, 'email_address', remove_whitespace=True)
+    df['address'] = df['address'].replace('\n', ' ', regex=True).str.strip()
+    valid_countries = ['Germany', 'United Kingdom', 'United States']
+    df.loc[~df['country'].isin(valid_countries), 'country'] = np.nan
+    valid_country_codes = ['DE', 'GB', 'US']
+    df.loc[~df['country_code'].isin(valid_country_codes), 'country_code'] = np.nan
+    df.loc[df['country'] == 'United Kingdom', 'country_code'] = 'GB'
+    # countries_without_code = df[df['country_code'].isna() & df['country'].notna()]
+    # codes_without_country = df[df['country'].isna() & df['country_code'].notna()]
+    # print(countries_without_code[['country', 'country_code']])
+    # print(codes_without_country[['country', 'country_code']])
+    df['phone_number'] = df['phone_number'].str.replace('[^\d+]', '', regex=True)
+    df['join_date'] = df['join_date'].apply(self.parse_date)
+    df['join_date'] = pd.to_datetime(df['join_date'], infer_datetime_format=True, errors='coerce')
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[8].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[13].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[18].eq('-'), other=np.nan)
+    df['user_uuid'] = df['user_uuid'].mask(~df['user_uuid'].str[23].eq('-'), other=np.nan)
+    df.drop_duplicates(inplace=True)
+    df = df.dropna()
+    print(df.isna().sum())
     df.info()
 
 new_data_cleaner = DataCleaning()
