@@ -1,5 +1,13 @@
 import pandas as pd
+import boto3
+import requests
+import json
+import data_cleaning
 import data_utils
+
+s3 = boto3.client('s3')
+
+sales_url = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json'
 
 class DataExtractor():
   
@@ -7,12 +15,30 @@ class DataExtractor():
     engine = connector.read_db_creds('db_creds.yaml')
     return pd.read_sql_table(table_name, engine)
   
+  def extract_from_s3(self, bucket, key, filename):
+    s3.download_file(bucket, key, filename)
+
+  def extract_json(self, url):
+    try:
+      response = requests.get(url)
+      if response.status_code == 200:
+        data = response.json()
+        with open('dim_date_times', 'w') as f:
+          json.dump(data, f)
+        # data = pd.DataFrame(response.json())
+        # return data_cleaning.new_data_cleaner.clean_dim_date_times(data)
+      else:
+        print(response.status_code)  
+    except Exception as e:
+      print(e)
+
 new_data_extractor = DataExtractor()
 
 users_df = new_data_extractor.read_rds_table(data_utils.new_db_connector, 'legacy_users')
 orders_df = new_data_extractor.read_rds_table(data_utils.new_db_connector, 'orders_table')
+new_data_extractor.extract_json(sales_url)
 
-print(users_df)
+
 
 # new_data_extractor.read_rds_data(data_utils.new_db_connector.read_db_creds('db_creds.yaml', 'legacy_store_details'))
 

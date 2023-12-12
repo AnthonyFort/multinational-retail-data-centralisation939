@@ -1,11 +1,17 @@
 import pandas as pd
 import numpy as np
+import json
+import os
 from dateutil.parser import parse
 from dateutil.parser._parser import ParserError
 from dataprep.clean import clean_email
-from data_extraction import users_df, orders_df
+# from data_extraction import users_df, orders_df
 from data_utils import new_db_connector
 from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
+filename_for_dim_date_times = os.environ.get('filename_for_dim_date_times')
+
 
 class DataCleaning():
   
@@ -68,11 +74,36 @@ class DataCleaning():
     df.drop_duplicates(inplace=True)
     df = df.dropna()
     return new_db_connector.upload_to_db(df, 'orders_table')
+  
+  def clean_dim_date_times(self, filename):
+    df = pd.read_json(filename)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], format= '%H:%M:%S', errors='coerce').dt.time
+    df['month'] = pd.to_datetime(df['month'], format='%m', errors='coerce')
+    df.dropna(subset=['month'], inplace=True)
+    df['month'] = df['month'].dt.month
+    df['year'] = pd.to_datetime(df['year'], format='%Y', errors='coerce')
+    df.dropna(subset=['year'], inplace=True)
+    df['year'] = df['year'].dt.year
+    df['day'] = pd.to_datetime(df['day'], format='%d', errors='coerce')
+    df.dropna(subset=['day'], inplace=True)
+    df['day'] = df['day'].dt.day
+    # print(df['time_period'].unique())
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[8].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[13].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[18].eq('-'), other=np.nan)
+    df['date_uuid'] = df['date_uuid'].mask(~df['date_uuid'].str[23].eq('-'), other=np.nan)
+    df.drop_duplicates(inplace=True)
+    return new_db_connector.upload_to_db(df, 'dim_date_times')
+    # print(df.isna().sum())
+    # print(df['date_uuid'])
+    # df.info()
+    
 
 new_data_cleaner = DataCleaning()
 
 # new_data_cleaner.clean_user_data(users_df)
-new_data_cleaner.clean_orders_data(orders_df)
+# new_data_cleaner.clean_orders_data(orders_df)
+new_data_cleaner.clean_dim_date_times(filename_for_dim_date_times )
 
 # import pandas as pd
 # from sqlalchemy import create_engine
