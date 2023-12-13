@@ -1,8 +1,7 @@
-import yaml
-from sqlalchemy import create_engine, inspect
 import os
+import yaml
 from dotenv import find_dotenv, load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 
 load_dotenv(find_dotenv())
 
