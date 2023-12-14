@@ -28,8 +28,8 @@ engine.execution_options(isolation_level='AUTOCOMMIT').connect()
 
 link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf'
 
-df_from_extraction = data_extraction.new_df.retrieve_pdf_data(link)
-products_df = data_extraction.new_df.convert_csv_to_df()
+# df_from_extraction = data_extraction.new_df.retrieve_pdf_data(link)
+# products_df = data_extraction.new_df.convert_csv_to_df()
 
 product_categories = ['toys-and-games', 'sports-and-leisure', 'pets', 'homeware', 'health-and-beauty', 'food-and-drink', 'diy']
 removed_categories = ['Still_avaliable', 'Removed']
