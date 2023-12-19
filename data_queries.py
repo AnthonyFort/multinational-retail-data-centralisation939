@@ -27,7 +27,34 @@ with engine.execution_options(isolation_level='AUTOCOMMIT').connect() as connect
   # connection.execute(text("ALTER TABLE dim_products ALTER uuid TYPE uuid USING uuid::uuid;"))
   # connection.execute("ALTER TABLE dim_products ADD COLUMN still_available BOOL;")
   # connection.execute("UPDATE dim_products SET still_available = CASE WHEN removed = 'Still_available' THEN True WHEN removed = 'Removed' THEN False ELSE NULL END;")
-  connection.execute("ALTER TABLE dim_products DROP COLUMN IF EXISTS removed")
+  # connection.execute("ALTER TABLE dim_products DROP COLUMN IF EXISTS removed")
+  # connection.execute("ALTER TABLE dim_date_times ALTER month TYPE varchar(2) USING month::varchar(2)")
+  # connection.execute("ALTER TABLE dim_date_times ALTER year TYPE varchar(4) USING year::varchar(4)")
+  # connection.execute("ALTER TABLE dim_date_times ALTER day TYPE varchar(2) USING day::varchar(2)")
+  # connection.execute("ALTER TABLE dim_date_times ALTER date_uuid TYPE uuid USING date_uuid::uuid")
+  # connection.execute("ALTER TABLE dim_date_times ALTER time_period TYPE varchar(10) USING time_period::varchar(10)")
+
+  # connection.execute(text("ALTER TABLE dim_date_times ALTER date_uuid TYPE uuid USING date_uuid::uuid;"))
+
+  # connection.execute(text("UPDATE dim_card_details SET card_number = CASE WHEN card_number ~ '[^0-9]' THEN NULL ELSE card_number END;"))
+  # connection.execute(text("ALTER TABLE dim_card_details ALTER card_number TYPE varchar(19) USING card_number::varchar(19)"))
+  # connection.execute(text("ALTER TABLE dim_card_details ALTER expiry_date TYPE varchar(5) USING expiry_date::varchar(5)"))
+
+  # connection.execute(text("ALTER TABLE dim_date_times ADD PRIMARY KEY (date_uuid)"))
+  # connection.execute(text("ALTER TABLE dim_users ADD PRIMARY KEY (user_uuid)"))
+  # connection.execute(text("ALTER TABLE dim_card_details ADD PRIMARY KEY (card_number)"))
+  # connection.execute(text("ALTER TABLE dim_store_details ADD PRIMARY KEY (store_code)"))
+  # connection.execute(text("ALTER TABLE dim_products ADD PRIMARY KEY (product_code)"))
+
+
+  # connection.execute("ALTER TABLE orders_table ADD CONSTRAINT fk_users FOREIGN KEY (user_uuid) REFERENCES dim_users(user_uuid)")
+  # connection.execute("ALTER TABLE orders_table ADD CONSTRAINT fk_date_times FOREIGN KEY (date_uuid) REFERENCES dim_date_times(date_uuid)")
+
+  connection.execute("ALTER TABLE orders_table ADD CONSTRAINT fk_card_number FOREIGN KEY (card_number) REFERENCES dim_card_details(card_number)")
+  # connection.execute("ALTER TABLE orders_table ADD CONSTRAINT fk_store_code FOREIGN KEY (store_code) REFERENCES dim_store_details(store_code)")
+  # connection.execute("ALTER TABLE orders_table ADD CONSTRAINT fk_product_code FOREIGN KEY (product_code) REFERENCES dim_products(product_code)")
+
+
   
 
   
