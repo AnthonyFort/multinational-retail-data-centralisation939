@@ -29,4 +29,105 @@ ORDER BY
 LIMIT
 	7;
 
+WHICH MONTHS HAVE PRODUCED THE MOST SALES:
+
+WITH cte AS (SELECT
+	product_price_gbp * product_quantity AS price_times_quantity,
+	month
+FROM
+	orders_table
+JOIN
+	dim_products
+ON
+	orders_table.product_code = dim_products.product_code
+JOIN
+	dim_date_times
+ON
+	orders_table.date_uuid = dim_date_times.date_uuid)
+	
+SELECT
+	ROUND(SUM(price_times_quantity)::numeric, 2) AS total_sales,
+	month
+FROM
+	cte
+GROUP BY
+	month
+ORDER BY
+	total_sales DESC
+
+HOW DO THE DIFFERENT STORE TYPES PERFORM COMPARED TO EACH OTHER
+
+WITH cte AS (SELECT
+	store_type,
+	product_price_gbp * product_quantity AS price_times_quantity
+FROM
+	orders_table
+JOIN
+	dim_store_details
+ON
+	orders_table.store_code = dim_store_details.store_code
+JOIN
+	dim_products
+ON
+	orders_table.product_code = dim_products.product_code),
+total_sales_cte AS (
+	SELECT
+		store_type,
+		SUM(price_times_quantity) AS total_sales
+	FROM
+		cte
+	GROUP BY
+		store_type
+)
+SELECT
+	store_type,
+	ROUND(total_sales::numeric, 2) AS total_sales,
+	ROUND(((total_sales / SUM(total_sales) OVER ()) * 100)::numeric, 2) AS total_percentage
+FROM
+	total_sales_cte
+ORDER BY
+	total_sales DESC;
+
+
+HOW MANY STAFF IN EACH COUNTRY
+
+SELECT
+	SUM(staff_numbers) AS total_staff_numbers,
+	country_code
+FROM
+	dim_store_details
+GROUP BY
+	country_code
+ORDER BY
+	total_staff_numbers DESC;
+
+HOW ARE THE GERMAN STORES PERFORMING?
+
+WITH german_stores AS (SELECT 
+	store_code,
+	country_code,
+	store_type
+FROM
+	dim_store_details
+WHERE
+	country_code = 'DE')
+SELECT
+	ROUND(SUM(product_price_gbp * product_quantity)::numeric, 2) AS total_sales,
+	store_type,
+	country_code
+FROM
+	orders_table
+JOIN
+	german_stores
+ON
+	orders_table.store_code = german_stores.store_code
+JOIN
+	dim_products
+ON
+	orders_table.product_code = dim_products.product_code
+GROUP BY
+	store_type,
+	country_code
+ORDER BY
+	total_sales;
 
