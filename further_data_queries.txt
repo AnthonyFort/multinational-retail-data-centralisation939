@@ -1,0 +1,32 @@
+HOW MANY STROES IN EACH COUNTRY
+
+SELECT 
+	country_code,
+	COUNT(country_code) AS country_code_count
+FROM 
+	dim_store_details 
+
+GROUP BY
+	country_code;
+
+WHICH LOCATIONS HAVE THE MOST STORES:
+
+WITH locality_count AS (
+	SELECT
+		locality,
+		COUNT(locality) AS count
+	FROM
+		dim_store_details
+	GROUP BY
+		locality)
+SELECT
+	locality,
+	count
+FROM
+	locality_count
+ORDER BY
+	count DESC
+LIMIT
+	7;
+
+
