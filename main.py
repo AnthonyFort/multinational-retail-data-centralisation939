@@ -6,12 +6,14 @@ import os
 from dotenv import find_dotenv, load_dotenv
 import boto3
 
-
+'''
+This script is the location from where the various methods in other
+scripts will be run in a logical order, first creating the engines,
+then extracting the uncleaned data, and finally uploading the cleaned data.
+'''
 
 s3 = boto3.client('s3')
-
 api_key = os.environ.get('x-api-key')
-
 headers = {
   'Content-Type': 'application/json',
   'x-api-key': api_key
@@ -28,7 +30,7 @@ if __name__ == '__main__':
   db_connector = DatabaseConnector()
   db_connector.read_db_creds('db_creds.yaml')
   db_connector.init_db_engine()
-  
+
   data_extractor = DataExtractor(db_connector)
   user_data_df = data_extractor.read_rds_table('legacy_users')
   card_data_df = data_extractor.retrieve_pdf_data(card_details_link)

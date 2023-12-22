@@ -426,5 +426,17 @@ REFERENCES
 
 
 
-SELECT DISTINCT product_code FROM orders_table
-WHERE product_code NOT IN (SELECT product_code FROM dim_products);  
+# SELECT DISTINCT product_code FROM orders_table
+# WHERE product_code NOT IN (SELECT product_code FROM dim_products);  
+
+# SELECT
+# 	product_code,
+# 	length(product_code)
+# FROM
+# 	orders_table
+# GROUP BY
+# 	product_code
+# ORDER BY
+# 	length(product_code) desc
+# LIMIT
+# 	1;

@@ -9,3 +9,6 @@ The premise is that I work for a multinational sales company whose sales data is
 ### Languages and Tools Used
 
 AWS, Pandas, PGAdmin4, Python, PostgreSQL, SQL, 
+
+## File Structure
+

@@ -14,6 +14,13 @@ removed_categories = ['Still_avaliable', 'Removed']
 
 class DataCleaning():
 
+  '''
+  This class includes methods for cleaning certain pandas dataframes.
+  Each method is tailored to the specific table that it is designed to clean.
+  Each method returns the cleaned dataframe to be uploaded to the database 
+  using the upload_to_db method.
+  '''
+
   def __init__(self, db_connector):
     self.db_connector = db_connector
 

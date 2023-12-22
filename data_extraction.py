@@ -25,7 +25,10 @@ filename_for_dim_date_times = os.environ.get('filename_for_dim_date_times')
 sales_url = os.environ.get('sales_url')
 
 class DataExtractor():
-
+  '''
+  This class includes the methods that can be used to extract tables
+  from various sources and in various formats (eg., aws bucket, csv, json, pdf, rds table).
+  '''
   def __init__(self, db_connector):
     self.db_connector = db_connector
 
