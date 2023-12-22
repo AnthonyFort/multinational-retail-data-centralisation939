@@ -210,7 +210,7 @@ ALTER
 TYPE 
 	varchar(13) 
 USING 
-	ean::varchar(13)
+	ean::varchar(13);
 
 ALTER TABLE 
 	dim_products 
@@ -241,19 +241,19 @@ SET
 ALTER TABLE 
 	dim_products 
 DROP COLUMN IF EXISTS 
-	removed
+	removed;
 
 ALTER TABLE 
 	dim_date_times 
 ALTER month 
 	TYPE varchar(2) 
-	USING month::varchar(2)
+	USING month::varchar(2);
 
 ALTER TABLE 
 	dim_date_times 
 ALTER year 
 	TYPE varchar(4) 
-	USING year::varchar(4)
+	USING year::varchar(4);
 
 ALTER TABLE 
 	dim_date_times 
@@ -261,7 +261,7 @@ ALTER
 	day 
 TYPE 
 	varchar(2) 
-USING day::varchar(2)
+USING day::varchar(2);
 
 ALTER TABLE 
 	dim_date_times 
@@ -270,7 +270,7 @@ ALTER
 TYPE 
 	uuid 
 USING 
-	date_uuid::uuid
+	date_uuid::uuid;
 
 ALTER TABLE 
 	dim_date_times 
@@ -315,17 +315,17 @@ ALTER
 TYPE 
 	varchar(5) 
 USING 
-	expiry_date::varchar(5)       
+	expiry_date::varchar(5);       
 
 ALTER TABLE 
 	dim_date_times 
 ADD PRIMARY KEY 
-	(date_uuid)
+	(date_uuid);
 
 ALTER TABLE 
 	dim_users 
 ADD PRIMARY KEY 
-	(user_uuid)
+	(user_uuid);
 
 DELETE FROM
 	dim_card_details
@@ -336,17 +336,17 @@ WHERE
 ALTER TABLE 
 	dim_card_details 
 ADD PRIMARY KEY 
-	(card_number)
+	(card_number);
 
 ALTER TABLE 
 	dim_store_details 
 ADD PRIMARY KEY 
-	(store_code)
+	(store_code);
 
 ALTER TABLE 
 	dim_products 
 ADD PRIMARY KEY 
-	(product_code)          
+	(product_code);          
 
 ALTER TABLE 
 	orders_table 
@@ -355,7 +355,7 @@ ADD CONSTRAINT
 FOREIGN KEY 
 	(user_uuid) 
 REFERENCES 
-	dim_users(user_uuid)
+	dim_users(user_uuid);
 
 ALTER TABLE 
 	orders_table 
@@ -364,7 +364,7 @@ ADD CONSTRAINT
 FOREIGN KEY 
 	(date_uuid) 
 REFERENCES 
-	dim_date_times(date_uuid)
+	dim_date_times(date_uuid);
 
 DELETE FROM 
 	orders_table
