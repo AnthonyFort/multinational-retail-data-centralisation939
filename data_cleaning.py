@@ -172,25 +172,4 @@ class DataCleaning():
     df = df.dropna()
     return df
     
-  
-if __name__ == '__main__':      
-  db_connector = DatabaseConnector()
-  db_connector.read_db_creds('db_creds.yaml')
-  db_connector.init_upload_engine()
-
-  data_cleaner = DataCleaning(db_connector)
-
-  # cleaned_user_data = data_cleaner.clean_user_data(user_data_df)
-  # cleaned_card_data = data_cleaner.clean_card_data(card_data_df)
-  # cleaned_store_data = data_cleaner.clean_store_data('stores_data.json')
-  # cleaned_products_data = data_cleaner.convert_product_weights(products_df)
-  # cleaned_orders_data = data_cleaner.clean_orders_data(orders_df)
-  # cleaned_date_times_data = data_cleaner.clean_dim_date_times('dim_date_times')
-
-  # db_connector.upload_to_db(cleaned_user_data, 'dim_users')
-  # db_connector.upload_to_db(cleaned_card_data, 'dim_card_details')
-  # db_connector.upload_to_db(cleaned_store_data, 'dim_store_details')
-  # db_connector.upload_to_db(cleaned_products_data, 'dim_products')
-  # db_connector.upload_to_db(cleaned_orders_data, 'orders_table')
-  # db_connector.upload_to_db(cleaned_date_times_data, 'dim_date_times')
 

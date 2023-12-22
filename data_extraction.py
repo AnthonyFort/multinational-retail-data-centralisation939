@@ -8,8 +8,6 @@ import json
 from functools import reduce
 from dotenv import find_dotenv, load_dotenv
 
-from data_utils import DatabaseConnector
-
 s3 = boto3.client('s3')
 
 api_key = os.environ.get('x-api-key')
@@ -83,17 +81,6 @@ class DataExtractor():
     except Exception as e:
       print(e) 
 
-# db_connector = DatabaseConnector()
-# db_connector.read_db_creds('db_creds.yaml')
-# db_connector.init_db_engine()
-
-# data_extractor = DataExtractor(db_connector)
-# user_data_df = data_extractor.read_rds_table('legacy_users')
-# card_data_df = data_extractor.retrieve_pdf_data(card_details_link)
-# products_df = data_extractor.convert_csv_to_df('products.csv')
-# orders_df = data_extractor.read_rds_table('orders_table')
-
 # number_of_stores = data_extractor.list_number_of_stores(store_numbers_url, headers)
 # data_extractor.retreive_stores_data(number_of_stores, store_endpoint)
-# products_df = data_extractor.extract_from_s3('data-handling-public', 'products.csv')
 # data_extractor.extract_json(sales_url)
